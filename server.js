@@ -6,7 +6,7 @@ const cors = require('cors');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -46,7 +46,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Get all events
 app.get('/api/events', (req, res) => {
     db.all(`SELECT * FROM events ORDER BY event_date DESC, id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -54,7 +53,6 @@ app.get('/api/events', (req, res) => {
     });
 });
 
-// Add a new event
 app.post('/api/events', upload.array('mediaFiles'), (req, res) => {
     const { category, date, title, desc } = req.body;
     const files = req.files ? req.files.map(f => '/uploads/' + f.filename).join(',') : '';
@@ -66,7 +64,6 @@ app.post('/api/events', upload.array('mediaFiles'), (req, res) => {
     });
 });
 
-// DELETE endpoint to remove wrong posts
 app.delete('/api/events/:id', (req, res) => {
     const eventId = req.params.id;
     db.run(`DELETE FROM events WHERE id = ?`, [eventId], function(err) {
@@ -76,5 +73,5 @@ app.delete('/api/events/:id', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
