@@ -254,7 +254,8 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/api/events';
+        // Connected to your live Render backend server
+        const API_URL = 'https://school-portal-3-29ab.onrender.com/api/events';
 
         window.onload = function() {
             if(sessionStorage.getItem('isAdmin') === 'true') { showAdminDashboard(); }
@@ -262,14 +263,13 @@
             loadEvents();
         }
 
-        // Prompt the admin to type the password directly
         function promptAdminLogin() {
             const enteredPassword = prompt("Please enter Admin Password:");
             if (enteredPassword === "Sirs@2026") {
                 sessionStorage.setItem('isAdmin', 'true');
                 showAdminDashboard();
                 alert("Login successful!");
-                loadEvents(); // Reload to display delete buttons
+                loadEvents();
             } else if (enteredPassword !== null) {
                 alert("Incorrect password!");
             }
@@ -322,7 +322,6 @@
             }
         }
 
-        // Delete post function available only to Admin
         async function deletePost(id) {
             if (confirm("Are you sure you want to delete this incorrect post?")) {
                 try {
@@ -389,7 +388,8 @@
                         const files = event.media_files.split(',');
                         mediaHTML = '<div class="media-gallery">';
                         files.forEach(file => {
-                            const fullFileUrl = `http://localhost:3000${file}`;
+                            // Automatically uses the live Render server domain for media files
+                            const fullFileUrl = `https://school-portal-3-29ab.onrender.com${file}`;
                             const isVideo = file.match(/\.(mp4|webm|mov)$/i);
 
                             if (isVideo) {
@@ -409,7 +409,6 @@
                         mediaHTML += '</div>';
                     }
 
-                    // Show Delete Button ONLY if Admin is logged in
                     let deleteButtonHTML = isAdmin ? `<button class="btn btn-danger" onclick="deletePost(${event.id})"><i class="fa-solid fa-trash"></i> Delete Post</button>` : '';
 
                     const targetFeed = feeds[event.category] || feeds.general;
